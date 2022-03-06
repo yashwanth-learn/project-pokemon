@@ -1,0 +1,7 @@
+.border-theme {
+  border: 5px solid #ffff00;
+}
+.center {
+  display: flex;
+  justify-content: center;
+}
