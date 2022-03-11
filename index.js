@@ -1,14 +1,31 @@
+let localStorage;
 let pokemonObj;
-let pokemonColor;
 let savedPokemons = [];
 
+window.onunload = function() {
+  if (savedPokemons.length > 0) {
+    localStorage.setItem("savedPokemons", JSON.stringify(savedPokemons));
+    window.localStorage = localStorage;
+  } else {
+    window.localStorage.clear();
+  }
+};
+
+window.onload = function(e) {
+  localStorage = window.localStorage;
+  if (localStorage.getItem("savedPokemons")) {
+    savedPokemons = JSON.parse(localStorage.getItem("savedPokemons"));
+    displayCarousel();
+  }
+};
+
 async function displayPokemon() {
-  pokemonObj = undefined;
   const pokeDexDiv = document.getElementById("pokemon-pokedex");
   const pokemonName = document.getElementById("pokemon-search").value;
   const pokemonImage = document.getElementById("pokemon-image");
   const pokemonImageDiv = document.getElementById("pokemon-image-div");
   const pokemonImageDetails = document.getElementById("pokemon-details");
+  document.getElementById("err-msg").style.display = "block";
   pokemonObj = verifySavedPokemon(pokemonName);
   if (!pokemonObj) {
     console.log("In api call");
@@ -16,10 +33,9 @@ async function displayPokemon() {
     pokemonObj = await fetchPokemon(pokemonName);
     pokemonObj && saveDeleteToggle("save");
   } else {
+    document.getElementById("err-msg").style.display = "none";
     saveDeleteToggle("delete");
   }
-  //   pokemonColor = await fetchPokemonColor(pokemonObj.id);
-  //   pokeDexDiv.style.borderColor = pokemonColor.name;
   if (pokemonObj) {
     if (pokemonObj.sprites) {
       pokemonImage.style.width = "300px";
@@ -49,14 +65,6 @@ function saveDeleteToggle(action) {
   pokemonExists.style.display = action === "delete" ? "block" : "none";
 }
 
-// async function fetchPokemon(){
-//     fetch("https://pokeapi.co/api/v2/pokemon/ditto").then(response => response.json()).then(res => loadPokemon(res));
-// }
-
-// function loadPokemon(data){
-//     pokemonObj = data;
-// }
-
 async function fetchPokemon(pName) {
   try {
     const response = await fetch("https://pokeapi.co/api/v2/pokemon/" + pName, {
@@ -64,25 +72,10 @@ async function fetchPokemon(pName) {
       credentials: "same-origin"
     });
     const responseJson = await response.json();
+    document.getElementById("err-msg").style.display = "none";
     return responseJson;
   } catch (error) {
-    console.error(error);
-  }
-}
-
-async function fetchPokemonColor(pName) {
-  try {
-    const response = await fetch(
-      "https://pokeapi.co/api/v2/pokemon-color/" + pName,
-      {
-        method: "GET",
-        credentials: "same-origin"
-      }
-    );
-    const responseJson = await response.json();
-    return responseJson;
-  } catch (error) {
-    console.error(error);
+    document.getElementById("err-msg").style.display = "block";
   }
 }
 
@@ -103,8 +96,8 @@ function flipPokemon() {
 function savePokemon() {
   if (!verifySavedPokemon(pokemonObj.name)) {
     savedPokemons.push(pokemonObj);
-    console.log(savedPokemons);
-    displaySlides();
+    saveDeleteToggle("delete");
+    displayCarousel();
   }
 }
 
@@ -118,7 +111,14 @@ function deletePokemon() {
     });
   }
   saveDeleteToggle("save");
-  displaySlides();
+  displayCarousel();
+}
+
+function deleteAllPokemon() {
+  savedPokemons = [];
+  displayCarousel();
+  document.getElementById("pokemon-delete-all").style.display = "none";
+  saveDeleteToggle("save");
 }
 
 function verifySavedPokemon(pName) {
@@ -131,25 +131,6 @@ function verifySavedPokemon(pName) {
     });
   }
   return savedPokemonObj;
-}
-
-function displaySlides() {
-  const slideContainer = document.getElementById("pokemon-slideshow-container");
-  let allSlideContent = "";
-  let arrows = "";
-  savedPokemons.map((pokemon, index) => {
-    const addSlideContent = `<div class="mySlides fade" id="pokemon-slide-${pokemon.name}">
-        <img src="${pokemon.sprites.front_default}" style="width:100%">
-      </div>`;
-    allSlideContent = allSlideContent + addSlideContent;
-  });
-  if (savedPokemons.length > 0) {
-    arrows = `<a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-  <a class="next" onclick="plusSlides(1)">&#10095;</a>`;
-  }
-  slideContainer.innerHTML = allSlideContent;
-  slideContainer.innerHTML = slideContainer.innerHTML + arrows;
-  showSlides(1);
 }
 
 function updateBackground() {
@@ -172,4 +153,18 @@ function updateBackground() {
       color = "lightgrey";
   }
   pokemonImageDiv.style.backgroundColor = color;
+}
+
+function displayCarousel() {
+  const displayContainer = document.getElementById("pokemon-container-id");
+  displayContainer.innerHTML = "";
+  if (savedPokemons.length > 0) {
+    document.getElementById("pokemon-delete-all").style.display = "block";
+    savedPokemons.forEach(pokemon => {
+      const image = `<img src=${pokemon.sprites.front_default} width=300px height=300px />`;
+      displayContainer.innerHTML = image + displayContainer.innerHTML;
+    });
+  } else {
+    document.getElementById("pokemon-delete-all").style.display = "none";
+  }
 }

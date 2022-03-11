@@ -5,16 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <script src="./index.js"></script>
-    <script src="./carousel.js"></script>
     <link rel="stylesheet" href="./index.css" />
-    <link rel="stylesheet" href="./carousel.css" />
     <title>Document</title>
   </head>
   <body>
-    <div class="center border-theme" id="pokemon-pokedex">
+    <div class="search-div" id="pokemon-pokedex">
       <div>
         <div class="center">
-          <h1>Poke-dex</h1>
+          <h1>Poke-lot</h1>
         </div>
         <div class="center">
           <input
@@ -23,9 +21,10 @@
             placeholder="search pokemon"
             onkeyup="displayPokemon()"
           />
+          <p style="color:red" id="err-msg">No Pokemon Found! Try again.</p>
         </div>
-        <div>
-          <div style="float:left;" id="pokemon-image-div">
+        <div id="pokemon-img-details" class="center">
+          <div id="pokemon-image-div">
             <img src="" id="pokemon-image" onclick="flipPokemon()" />
           </div>
           <div
@@ -33,10 +32,10 @@
             id="pokemon-details"
           ></div>
         </div>
-        <div id="pokemon-add-delete-div">
-          <span id="pokemon-exists" style="display: none"
-            >Pokemon Already Exists!</span
-          >
+        <div class="center" id="pokemon-add-delete-div">
+          <div id="pokemon-exists" style="display: none">
+            Pokemon Already Exists!
+          </div>
           <button
             type="button"
             id="pokemon-save"
@@ -56,13 +55,20 @@
         </div>
       </div>
     </div>
-    <div id="pokemon-slideshow-container" class="slideshow-container"></div>
-    <!-- <br>
-        
-        <div style="text-align:center">
-          <span class="dot" onclick="currentSlide(1)"></span> 
-          <span class="dot" onclick="currentSlide(2)"></span> 
-          <span class="dot" onclick="currentSlide(3)"></span> 
-        </div> -->
+    <div class="break-div"></div>
+    <div id="pokemon-container-parent">
+      <div id="pokemon-container-id" class="pokemon-container center"></div>
+    </div>
+    <div class="break-div"></div>
+    <div class="center">
+      <button
+        type="button"
+        id="pokemon-delete-all"
+        style="display: none"
+        onclick="deleteAllPokemon()"
+      >
+        Delete All
+      </button>
+    </div>
   </body>
 </html>

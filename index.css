@@ -1,7 +1,44 @@
-.border-theme {
-  border: 5px solid #ffff00;
+.search-div {
+  min-height: 500px;
 }
 .center {
   display: flex;
   justify-content: center;
+}
+
+#err-msg {
+  display: none;
+}
+.search-div {
+  background-image: url("pattern3.png");
+  background-repeat: repeat/no-repeat;
+  opacity: 1;
+}
+
+#pokemon-container-parent {
+  overflow: auto;
+}
+#pokemon-container-id {
+  overflow: auto;
+  background-color: azure;
+  display: inline-flex;
+  flex-direction: row;
+}
+
+.break-div {
+  background-color: burlywood;
+  height: 10px;
+  width: 100%;
+}
+
+#pokemon-img-details {
+  margin: 30px 0 30px 0;
+}
+
+#pokemon-image-div {
+  float: left;
+  border-radius: 50%;
+}
+#pokemon-delete-all {
+  margin: 5px;
 }
